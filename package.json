@@ -1,58 +1,58 @@
 {
-    "devDependencies": {
-        "eslint": "^7.0.0",
-        "eslint-config-prettier": "^6.11.0",
-        "eslint-plugin-jest": "^23.11.0",
-        "eslint-plugin-prettier": "^3.1.3",
-        "jest": "^26.0.1",
-        "prettier": "^2.0.5"
+  "devDependencies": {
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^23.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "jest": "^26.0.1",
+    "prettier": "^2.0.5"
+  },
+  "scripts": {
+    "format": "prettier --write src/**/*.js",
+    "lint": "eslint src",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch"
+  },
+  "name": "backend-pre-interview",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:en-trak/backend-pre-interview.git",
+  "author": "Linnovs Liu <7882261+linnovs@users.noreply.github.com>",
+  "license": "MIT",
+  "private": false,
+  "eslintConfig": {
+    "plugins": [
+      "prettier",
+      "jest"
+    ],
+    "rules": {
+      "prettier/prettier": "error"
     },
-    "scripts": {
-        "format": "prettier --write src/**/*.js",
-        "lint": "eslint src",
-        "test": "jest --coverage",
-        "test:watch": "jest --coverage --watch"
-    },
-    "name": "backend-pre-interview",
-    "version": "1.0.0",
-    "main": "index.js",
-    "repository": "git@github.com:en-trak/backend-pre-interview.git",
-    "author": "Linnovs Liu <7882261+linnovs@users.noreply.github.com>",
-    "license": "MIT",
-    "private": false,
-    "eslintConfig": {
-        "plugins": [
-            "prettier",
-            "jest"
-        ],
-        "rules": {
-            "prettier/prettier": "error"
-        },
-        "extends": [
-            "eslint:recommended",
-            "plugin:prettier/recommended",
-            "plugin:jest/recommended"
+    "extends": [
+      "eslint:recommended",
+      "plugin:prettier/recommended",
+      "plugin:jest/recommended"
         ],
         "parserOptions": {
-            "sourceType": "module"
+          "sourceType": "module"
         },
         "env": {
-            "node": true,
-            "es6": true,
-            "es2020": true
+          "node": true,
+          "es6": true,
+          "es2020": true
         }
-    },
-    "jest": {
-        "collectCoverageFrom": [
-            "src/**/*.js"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js"
         ],
         "coverageThreshold": {
-            "global": {
-                "branches": 100,
-                "functions": 100,
-                "lines": 100,
-                "statements": 100
-            }
+          "global": {
+            "branches": 100,
+            "functions": 100,
+            "lines": 100,
+            "statements": 100
+          }
         }
-    }
+  }
 }
