@@ -49,7 +49,7 @@
 !.vscode/extensions.json
 
 ### CoffeeScript ###
-*.js
+*.coffee
 
 ### Emacs ###
 # -*- mode: gitignore; -*-
