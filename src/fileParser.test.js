@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 
-const fileParser = require("./fileParser.js");
+const { getSudokuFromFile } = require("./fileParser.js");
 
 let inputFilePath;
 
@@ -91,7 +91,7 @@ describe("fileParser", () => {
       ];
 
       // Act
-      const result = fileParser.getSudokuFromFile(`${inputFilePath}`);
+      const result = getSudokuFromFile(`${inputFilePath}`);
 
       // Assert
       expect(result).toEqual(expected);
