@@ -2,7 +2,8 @@ const dlx = require("./dlx.js");
 
 describe("dlx", () => {
   it("should solve a matrix", () => {
-    const matrix = [
+    // Arrange
+    const input = [
       [0, 0, 1, 0, 1, 1, 0],
       [1, 0, 0, 1, 0, 0, 1],
       [0, 1, 1, 0, 0, 1, 0],
@@ -10,6 +11,12 @@ describe("dlx", () => {
       [0, 1, 0, 0, 0, 0, 1],
       [0, 0, 0, 1, 1, 0, 1],
     ];
-    expect(dlx(matrix)).toEqual([4, 1, 5]);
+    const expected = [4, 1, 5];
+
+    // Act
+    const result = dlx(input);
+
+    // Assert
+    expect(result).toEqual(expected);
   });
 });

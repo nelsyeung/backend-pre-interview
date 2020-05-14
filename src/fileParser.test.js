@@ -53,6 +53,7 @@ afterAll(() => {
 describe("fileParser", () => {
   describe("getSudokuFromFile", () => {
     it("should return an array of sudoku", () => {
+      // Arrange
       const expected = [
         [
           [0, 0, 3, 0, 2, 0, 6, 0, 0],
@@ -89,8 +90,10 @@ describe("fileParser", () => {
         ],
       ];
 
+      // Act
       const result = fileParser.getSudokuFromFile(`${inputFilePath}`);
 
+      // Assert
       expect(result).toEqual(expected);
     });
   });
