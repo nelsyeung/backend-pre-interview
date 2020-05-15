@@ -8,7 +8,7 @@ function getSudokuFromFile(filePath) {
     .reduce((sudoku, line) => {
       if (line.startsWith("Grid")) {
         sudoku.push([]);
-      } else {
+      } else if (line !== "") {
         sudoku[sudoku.length - 1].push(
           line.split("").map((x) => parseInt(x, 10))
         );
