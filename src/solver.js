@@ -1,66 +1,101 @@
+const {
+  blockConstraint,
+  cellConstraint,
+  columnConstraint,
+  rowConstraint,
+} = require("./constraints.js");
 const dlx = require("./dlx.js");
+
+/**
+ * Return true if an array has duplicates.
+ */
+function hasDuplicates(array) {
+  return new Set(array).size !== array.length;
+}
+
+/**
+ * Check if a sudoku is correct.
+ */
+function checkSudoku(sudoku) {
+  const transposed = sudoku[0].map((c, i) => sudoku.map((r) => r[i]));
+  const rows = sudoku.length;
+  const columns = sudoku[0].length;
+  const blocks = [...Array(rows)].map(() => []);
+  let blockWidth = columns;
+  let blockHeight = 1;
+
+  if (Math.sqrt(rows) % 1 === 0) {
+    // Square number
+    blockWidth = Math.sqrt(rows);
+    blockHeight = blockWidth;
+  } else if (rows % 2 === 0) {
+    // Even number
+    blockWidth = columns / 2;
+    blockHeight = 2;
+  }
+
+  // Get values from each block
+  sudoku.forEach((row, r) => {
+    row.forEach((number, c) => {
+      const block =
+        Math.trunc(r / blockHeight) * (columns / blockWidth) +
+        Math.trunc(c / blockWidth);
+
+      blocks[block].push(sudoku[r][c]);
+    });
+  });
+
+  for (let i = 0; i < rows; i++) {
+    if (
+      hasDuplicates(transposed[i]) ||
+      hasDuplicates(sudoku[i]) ||
+      hasDuplicates(blocks[i])
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 /**
  * Return the exact cover matrix from a sudoku matrix.
  */
-function getExactCoverMatrix(sudoku) {
+function getExactCoverMatrix(sudoku, ...constraints) {
   const rows = sudoku.length;
   const columns = sudoku[0].length;
+  const numbers = rows; // Assume the allowed numbers is the number of rows.
   const matrix = [];
-  let loop = 0;
+  let matrixRow = -1;
 
-  for (let r = 0; r < rows; r += 1) {
-    const boxNumDown = parseInt(r / 3, 10) * 3;
+  // Use default set of constraints if no constraint functions are passed.
+  if (constraints.length === 0) {
+    constraints = [
+      cellConstraint,
+      rowConstraint,
+      columnConstraint,
+      blockConstraint,
+    ];
+  }
 
-    for (let c = 0; c < columns; c += 1) {
-      const boxNum = boxNumDown + parseInt(c / 3, 10);
-
-      for (let n = 0; n < rows; n += 1) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      for (let n = 0; n < numbers; n++) {
         matrix.push([]);
+        matrixRow++;
 
-        for (let i = 0; i < rows; i += 1) {
-          for (let j = 0; j < columns; j += 1) {
-            // If value is already filled and current n iteration is not the
-            // filled value, then the number should not satisfy any contraints
-            if (sudoku[r][c] !== 0 && n + 1 !== sudoku[r][c]) {
-              matrix[loop].push(0);
-              matrix[loop].push(0);
-              matrix[loop].push(0);
-              matrix[loop].push(0);
-              continue;
-            }
-
-            // Row-Column contraints
-            if (i === r && j === c) {
-              matrix[loop].push(1);
-            } else {
-              matrix[loop].push(0);
-            }
-
-            // Row-Number contraints
-            if (i === r && j === n) {
-              matrix[loop].push(1);
-            } else {
-              matrix[loop].push(0);
-            }
-
-            // Column-Number contraints
-            if (i === c && j === n) {
-              matrix[loop].push(1);
-            } else {
-              matrix[loop].push(0);
-            }
-
-            // Box-Number contraints
-            if (i === boxNum && j === n) {
-              matrix[loop].push(1);
-            } else {
-              matrix[loop].push(0);
-            }
-          }
+        // If value is already filled and current number is not the filled
+        // value, then the number should not satisfy any contraint.
+        if (sudoku[r][c] !== 0 && n + 1 !== sudoku[r][c]) {
+          matrix[matrixRow].push(
+            ...Array(constraints.length * rows * columns).fill(0)
+          );
+          continue;
         }
 
-        loop += 1;
+        constraints.forEach((constraint) =>
+          matrix[matrixRow].push(...constraint(rows, columns, numbers, r, c, n))
+        );
       }
     }
   }
@@ -71,16 +106,22 @@ function getExactCoverMatrix(sudoku) {
 /**
  * Return a solved sudoku.
  */
-function solve(sudoku) {
+function solve(sudoku, ...constraints) {
   const rows = sudoku.length;
   const columns = sudoku[0].length;
   const result = [...Array(rows)].map(() => Array(columns));
+  const exactCoverMatrix = getExactCoverMatrix(sudoku, ...constraints);
+  const solution = dlx(exactCoverMatrix);
 
-  dlx(getExactCoverMatrix(sudoku)).forEach((s) => {
+  if (solution.length === 0) {
+    return false;
+  }
+
+  solution.forEach((s) => {
     const n = s % rows === 0 ? rows : s % rows;
     s -= n;
-    const r = parseInt(s / (rows * columns), 10);
-    const c = parseInt((s - r * (rows * columns)) / rows, 10);
+    const r = Math.trunc(s / (rows * columns));
+    const c = Math.trunc((s - r * (rows * columns)) / rows);
     result[r][c] = n;
   });
 
@@ -88,6 +129,7 @@ function solve(sudoku) {
 }
 
 module.exports = {
+  checkSudoku,
   getExactCoverMatrix,
   solve,
 };

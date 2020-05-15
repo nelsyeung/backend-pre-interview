@@ -68,7 +68,7 @@ function cover(c) {
       j.down.up = j.up;
       j.up.down = j.down;
       // Set S[C[j]] <- S[C[j]] - 1
-      j.column.data.size -= 1;
+      j.column.data.size--;
     }
   }
 }
@@ -81,18 +81,18 @@ function uncover(c) {
   // For each i = U[c], U[U[c]], ..., while i =/= c
   for (let i = c.up; i !== c; i = i.up) {
     // For each j <- L[i], L[L[i]], ..., while j =/= i
-    for (let j = i.left; j !== i; j = j.right) {
+    for (let j = i.left; j !== i; j = j.left) {
       // Set S[C[j]] <- S[C[j]] + 1
-      j.column.data.size += 1;
+      j.column.data.size++;
       // Set U[D[j]] <- j, D[U[j]] <- j
-      j.up.down = j.down;
-      j.down.up = j.up;
+      j.down.up = j;
+      j.up.down = j;
     }
-
-    // Set L[R[c]] <- c and R[L[c]] <- c
-    c.right.left = c;
-    c.left.right = c;
   }
+
+  // Set L[R[c]] <- c and R[L[c]] <- c
+  c.right.left = c;
+  c.left.right = c;
 }
 
 /**
